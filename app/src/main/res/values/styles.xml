@@ -5,9 +5,11 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorOnSurface">@android:color/transparent</item>
+        <item name="titleTextColor">@android:color/white</item>
     </style>
 
     <style name="BottomNavigationViewStyle" parent="Widget.Design.BottomNavigationView">
         <item name="itemBackground">@null</item> <!-- Usuwa tło -->
     </style>
+
 </resources>
