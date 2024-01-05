@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">SnapGallery</string>
+    <string name="obrazy">Obrazy</string>
+    <string name="filmy">Filmy</string>
+    <string name="albumy">Albumy</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="images_fragment">images_fragment</string>
+    <string name="moje_albumy">Moje albumy</string>
+    <string name="moje_zdj_cia">Moje zdjęcia</string>
+    <string name="moje_filmy">Moje filmy</string>
+</resources>
