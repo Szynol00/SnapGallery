@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Movies">
+    tools:context=".Movies"
+    tools:ignore="ExtraText">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
@@ -12,6 +13,5 @@
         android:text="@string/moje_filmy"
         android:textSize="26sp"
         android:layout_gravity="center"/>
-    />
 
 </FrameLayout>

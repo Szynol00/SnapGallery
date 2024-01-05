@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.SnapGallery" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
@@ -9,6 +9,5 @@
     </style>
 
     <style name="Theme.SnapGallery" parent="Base.Theme.SnapGallery" />
-
 
 </resources>
