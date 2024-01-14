@@ -7,6 +7,9 @@ import android.view.MenuInflater
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.example.snapgallery.databinding.ActivityMainBinding
+import com.example.snapgallery.fragment.AlbumsFragment
+import com.example.snapgallery.fragment.ImagesFragment
+import com.example.snapgallery.fragment.MoviesFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,9 +25,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId) {
-                R.id.images -> replaceFragment(Images())
-                R.id.movies -> replaceFragment(Movies())
-                R.id.albums -> replaceFragment(Albums())
+                R.id.images -> replaceFragment(ImagesFragment())
+                R.id.movies -> replaceFragment(MoviesFragment())
+                R.id.albums -> replaceFragment(AlbumsFragment())
                 else -> {}
             }
             true
@@ -33,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         // Sprawdź czy savedInstanceState jest null, co oznacza że aplikacja została uruchomiona na nowo
         if (savedInstanceState == null) {
             // Wywołaj replaceFragment, aby wyświetlić Images Fragment jako startowy
-            replaceFragment(Images())
+            replaceFragment(ImagesFragment())
             // Ustaw wybrany element na BottomNavigationView
             binding.bottomNavigationView.selectedItemId = R.id.images
         }
