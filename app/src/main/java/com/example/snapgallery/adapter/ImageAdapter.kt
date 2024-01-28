@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.snapgallery.R
-import com.example.snapgallery.model.Image
 import com.bumptech.glide.Glide
+import com.example.snapgallery.R.id.image_view
 
 class ImageAdapter(private val images: List<Uri>) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imageView: ImageView = itemView.findViewById(R.id.image_view)
+        var imageView: ImageView = itemView.findViewById(image_view)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

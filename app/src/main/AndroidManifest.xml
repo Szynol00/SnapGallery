@@ -4,6 +4,7 @@
 
     <!-- Dodane uprawnienie do odczytu zewnętrznej pamięci -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 
 
     <application

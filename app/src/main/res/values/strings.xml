@@ -9,4 +9,6 @@
     <string name="moje_albumy">Moje albumy</string>
     <string name="moje_zdj_cia">Moje zdjęcia</string>
     <string name="moje_filmy">Moje filmy</string>
+    <string name="video">Video</string>
+    <string name="image" />
 </resources>

@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.example.snapgallery.databinding.ActivityMainBinding
 import com.example.snapgallery.fragment.AlbumsFragment
 import com.example.snapgallery.fragment.ImagesFragment
-import com.example.snapgallery.fragment.MoviesFragment
+import com.example.snapgallery.fragment.VideosFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,41 +17,50 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Inicjalizacja widoku i bindowanie za pomocą View Binding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Ustawienie paska narzędziowego
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        // Ustawienie listenera dla BottomNavigationView
         binding.bottomNavigationView.setOnItemSelectedListener {
+            // W zależności od wybranego elementu, wyświetl odpowiedni fragment
             when(it.itemId) {
                 R.id.images -> replaceFragment(ImagesFragment())
-                R.id.movies -> replaceFragment(MoviesFragment())
+                R.id.movies -> replaceFragment(VideosFragment())
                 R.id.albums -> replaceFragment(AlbumsFragment())
                 else -> {}
             }
             true
         }
 
-        // Sprawdź czy savedInstanceState jest null, co oznacza że aplikacja została uruchomiona na nowo
+        // Sprawdzenie, czy istnieje zapisany stan instancji (np. po zmianie konfiguracji)
         if (savedInstanceState == null) {
-            // Wywołaj replaceFragment, aby wyświetlić Images Fragment jako startowy
+            // Domyślnie wyświetla ImagesFragment
             replaceFragment(ImagesFragment())
-            // Ustaw wybrany element na BottomNavigationView
+            // Ustawienie domyślnego wybranego elementu w BottomNavigationView
             binding.bottomNavigationView.selectedItemId = R.id.images
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        // Tworzenie menu z pliku XML
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.top_tool_bar, menu)
         return true
     }
 
     private fun replaceFragment(fragment: Fragment) {
+        // Zarządzanie transakcjami fragmentów
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
+        // Zastąpienie fragmentu w kontenerze
         fragmentTransaction.replace(R.id.frame_layout, fragment)
+        // Potwierdzenie transakcji
         fragmentTransaction.commit()
     }
 }
