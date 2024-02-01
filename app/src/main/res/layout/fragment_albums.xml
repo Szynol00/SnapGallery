@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".fragment.AlbumsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/moje_albumy"
-        android:textSize="26sp"
-        android:layout_gravity="center"/>
-
+    <!-- RecyclerView do wyświetlania albumów -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/albumsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="4dp"
+        android:clipToPadding="false"
+        tools:listitem="@layout/album_item" />
 </FrameLayout>
