@@ -8,9 +8,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -48,6 +51,18 @@ class AlbumsFragment : Fragment() {
     // Inicjalizacja RecyclerView i sprawdzenie uprawnień
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val searchEditText: EditText = view.findViewById(R.id.searchEditText)
+
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                albumAdapter.filter(s.toString())
+            }
+        })
 
         // Inicjalizacja RecyclerView z pustym adapterem
         albumAdapter = AlbumAdapter(emptyList())
@@ -118,7 +133,7 @@ class AlbumsFragment : Fragment() {
         return albumList
     }
 
-    // Zliczanie mediów w albumies
+    // Zliczanie mediów w albumach
     private fun getMediaCount(contentResolver: ContentResolver, albumId: String, uri: Uri): Int {
         val projection = arrayOf(MediaStore.MediaColumns._ID)
         val selection = "${MediaStore.MediaColumns.BUCKET_ID} = ?"

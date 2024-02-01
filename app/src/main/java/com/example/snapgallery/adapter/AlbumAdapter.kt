@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.example.snapgallery.R
 import com.example.snapgallery.model.Album
 class AlbumAdapter(private var albums: List<Album>) : RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>() {
+    private var allAlbums: List<Album> = albums
     // Klasa ViewHolder dla każdego elementu albumu w RecyclerView
     class AlbumViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val thumbnailImageView: ImageView = view.findViewById(R.id.album_thumbnail)
@@ -40,9 +41,18 @@ class AlbumAdapter(private var albums: List<Album>) : RecyclerView.Adapter<Album
         }
     }
 
+    fun filter(query: String) {
+        val lowerCaseQuery = query.lowercase()
+        albums = allAlbums.filter {
+            it.name.lowercase().contains(lowerCaseQuery)
+        }
+        notifyDataSetChanged()
+    }
+
     // Aktualizacja danych w adapterze
     fun updateData(newAlbums: List<Album>) {
-        this.albums = newAlbums
+        this.allAlbums = newAlbums
+        this.albums = newAlbums // Zaktualizuj albums tak, aby mógł być filtrowany
         notifyDataSetChanged()
     }
 

@@ -1,16 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.AlbumsFragment">
+
+    <!-- Pole wyszukiwania -->
+    <EditText
+        android:id="@+id/searchEditText"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:drawableStart="@drawable/baseline_search_24"
+        android:drawablePadding="10dp"
+        android:hint="Szukaj..."
+        android:inputType="text"
+        android:padding="12dp"
+        android:background="@drawable/edittext_border"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp" />
+
+    <!-- Tekst 'Moje albumy' -->
+    <TextView
+        android:id="@+id/myAlbumsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/searchEditText"
+        android:text="Moje albumy"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp" />
+
+    <!-- Przycisk dodawania albumu -->
+    <Button
+        android:id="@+id/addAlbumButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_alignBaseline="@id/myAlbumsTextView"
+        android:text="Utwórz Album +"
+        android:textColor="@color/white"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp" />
 
     <!-- RecyclerView do wyświetlania albumów -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/albumsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="4dp"
+        android:layout_below="@id/myAlbumsTextView"
+        android:layout_marginTop="16dp"
         android:clipToPadding="false"
+        android:padding="4dp"
         tools:listitem="@layout/album_item" />
-</FrameLayout>
+</RelativeLayout>
