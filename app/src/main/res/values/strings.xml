@@ -11,4 +11,10 @@
     <string name="moje_filmy">Moje filmy</string>
     <string name="video">Video</string>
     <string name="image" />
+    <string name="back">back</string>
+    <string name="share">share</string>
+    <string name="favorite">favorite</string>
+    <string name="delete">delete</string>
+    <string name="info_linearlayout_relativelayout"><![CDATA[info/> </LinearLayout> </RelativeLayout>]]></string>
+    <string name="info">info</string>
 </resources>

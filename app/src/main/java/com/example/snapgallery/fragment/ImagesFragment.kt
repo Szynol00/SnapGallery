@@ -2,6 +2,7 @@ package com.example.snapgallery.fragment
 
 import android.Manifest
 import android.content.ContentUris
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -17,9 +18,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.snapgallery.ImageRepository
 import com.example.snapgallery.R
 import com.example.snapgallery.adapter.ImageAdapter
 import com.google.android.material.snackbar.Snackbar
+import com.example.snapgallery.activity.FullScreenImageActivity
+
 
 class ImagesFragment : Fragment() {
 
@@ -64,9 +68,22 @@ class ImagesFragment : Fragment() {
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = GridLayoutManager(context, 3)
         val images = fetchImages()
-        val adapter = ImageAdapter(images)
+
+        // Zapisywanie obrazów do repozytorium
+        ImageRepository.images = images
+
+        // Przekazanie funkcji obsługującej kliknięcie na obraz
+        val adapter = ImageAdapter(images) { uri ->
+            val selectedImageIndex = images.indexOf(uri)
+            val intent = Intent(context, FullScreenImageActivity::class.java).apply {
+                putExtra("selectedImageIndex", selectedImageIndex) // Przekazanie indeksu wybranego obrazu
+            }
+            startActivity(intent)
+        }
+
         recyclerView.adapter = adapter
     }
+
 
     // Metoda do pobierania obrazów z urządzenia
     private fun fetchImages(): List<Uri> {

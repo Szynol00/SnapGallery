@@ -1,4 +1,4 @@
-package com.example.snapgallery
+package com.example.snapgallery.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.example.snapgallery.R
 import com.example.snapgallery.databinding.ActivityMainBinding
 import com.example.snapgallery.fragment.AlbumsFragment
 import com.example.snapgallery.fragment.ImagesFragment

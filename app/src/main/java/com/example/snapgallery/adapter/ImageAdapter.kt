@@ -8,12 +8,14 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.snapgallery.R
 import com.bumptech.glide.Glide
-import com.example.snapgallery.R.id.image_view
 
-class ImageAdapter(private val images: List<Uri>) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+class ImageAdapter(
+    private val images: List<Uri>,
+    private val onImageClick: ((Uri) -> Unit)? = null // Dodatkowy parametr dla obsługi kliknięcia
+) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imageView: ImageView = itemView.findViewById(image_view)
+        var imageView: ImageView = itemView.findViewById(R.id.image_view) // Uwaga: poprawione id
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,12 +26,16 @@ class ImageAdapter(private val images: List<Uri>) : RecyclerView.Adapter<ImageAd
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val imageUri = images[position]
 
-//         Załaduj zdjęcie do ImageView z obsługą placeholderów i błędów
         Glide.with(holder.imageView.context)
             .load(imageUri)
-            .placeholder(R.drawable.image_placeholder) // Dodaj plik graficzny do projektu jako placeholder
-            .error(R.drawable.image_error)             // Dodaj plik graficzny do projektu na wypadek błędu
+            .placeholder(R.drawable.image_placeholder)
+            .error(R.drawable.image_error)
             .into(holder.imageView)
+
+        // Ustawienie onClickListener dla każdego elementu
+        holder.imageView.setOnClickListener {
+            onImageClick?.invoke(imageUri)
+        }
     }
 
     override fun getItemCount() = images.size
