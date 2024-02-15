@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,22 +23,16 @@ import com.example.snapgallery.adapter.ImageAdapter
 import com.google.android.material.snackbar.Snackbar
 import com.example.snapgallery.activity.FullScreenImageActivity
 
-
 class ImagesFragment : Fragment() {
 
-
-    // Inicjalizacja ActivityResultLauncher do obsługi wyniku żądania uprawnienia
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Rejestrujemy ActivityResultLauncher
         permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
-                // Jeśli uprawnienie zostało przyznane, załaduj obrazy
                 view?.let { loadImages(it) }
             } else {
-                // Obsługa sytuacji, gdy uprawnienie nie jest przyznane
                 view?.let {
                     Snackbar.make(it, "Brak przyznanych uprawnień do odczytu zdjęć", Snackbar.LENGTH_LONG).show()
                 }
@@ -47,20 +40,31 @@ class ImagesFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_images, container, false)
+        checkAndRequestPermissions(view)
+        return view
+    }
 
-        // Użyj nowego uprawnienia do odczytu obrazów
-        val permission = Manifest.permission.READ_MEDIA_IMAGES
-        if (ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-            loadImages(view)
+    private fun checkAndRequestPermissions(view: View) {
+        val permissionsNeeded = mutableListOf<String>()
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                permissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
         } else {
-            // Jeśli nie, to żądaj uprawnienia
-            permissionLauncher.launch(permission)
+            // Dla Android 11 i nowszych, uprawnienia są zarządzane przez nowe API
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                permissionsNeeded.add(Manifest.permission.READ_MEDIA_IMAGES)
+            }
         }
 
-        return view
+        if (permissionsNeeded.isNotEmpty()) {
+            permissionLauncher.launch(permissionsNeeded.first())
+        } else {
+            loadImages(view)
+        }
     }
 
     // Metoda do ładowania obrazów do RecyclerView

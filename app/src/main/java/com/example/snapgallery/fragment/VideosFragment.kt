@@ -2,6 +2,7 @@ package com.example.snapgallery.fragment
 
 import android.Manifest
 import android.content.ContentUris
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -12,12 +13,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.snapgallery.R
+import com.example.snapgallery.activity.VideoPlayerActivity
 import com.example.snapgallery.adapter.VideoAdapter
 import com.google.android.material.snackbar.Snackbar
 
@@ -38,25 +39,39 @@ class VideosFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_videos, container, false)
+        checkAndRequestPermissions(view)
+        return view
+    }
 
-        val permission = Manifest.permission.READ_MEDIA_VIDEO
-        if (ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-            loadVideos(view)
+    private fun checkAndRequestPermissions(view: View) {
+        val permissionNeeded: String = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            Manifest.permission.READ_EXTERNAL_STORAGE
         } else {
-            permissionLauncher.launch(permission)
+            // Dla Android 11 i nowszych, uprawnienia są zarządzane przez nowe API
+            Manifest.permission.READ_MEDIA_VIDEO
         }
 
-        return view
+        if (ContextCompat.checkSelfPermission(requireContext(), permissionNeeded) != PackageManager.PERMISSION_GRANTED) {
+            permissionLauncher.launch(permissionNeeded)
+        } else {
+            loadVideos(view)
+        }
     }
 
     private fun loadVideos(view: View) {
         val recyclerView: RecyclerView = view.findViewById(R.id.videosRecyclerView)
         recyclerView.layoutManager = GridLayoutManager(context, 3)
         val videos = fetchVideos()
-        val adapter = VideoAdapter(videos)
+
+        val adapter = VideoAdapter(videos) { videoUri ->
+            val intent = Intent(activity, VideoPlayerActivity::class.java).apply {
+                putExtra("videoUri", videoUri)
+            }
+            startActivity(intent)
+        }
+
         recyclerView.adapter = adapter
     }
 

@@ -34,7 +34,6 @@ class AlbumsFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var albumAdapter: AlbumAdapter
 
-    // Launcher do obsługi wyniku zgody na dostęp do mediów
     private val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
         if (isGranted) {
             loadAlbums()
@@ -43,12 +42,11 @@ class AlbumsFragment : Fragment() {
         }
     }
 
-    // Tworzenie widoku fragmentu
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_albums, container, false)
     }
-    // Inicjalizacja RecyclerView i sprawdzenie uprawnień
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -64,7 +62,6 @@ class AlbumsFragment : Fragment() {
             }
         })
 
-        // Inicjalizacja RecyclerView z pustym adapterem
         albumAdapter = AlbumAdapter(emptyList())
         recyclerView = view.findViewById(R.id.albumsRecyclerView)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
@@ -73,16 +70,20 @@ class AlbumsFragment : Fragment() {
         checkPermissionAndLoadAlbums()
     }
 
-    // Sprawdzenie uprawnień i ładowanie albumów
     private fun checkPermissionAndLoadAlbums() {
-        val permission = Manifest.permission.READ_MEDIA_IMAGES
+        val permission = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        } else {
+            Manifest.permission.READ_MEDIA_IMAGES
+        }
+
         if (ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
             loadAlbums()
         } else {
             permissionLauncher.launch(permission)
         }
     }
-    // Ładowanie albumów
+
     private fun loadAlbums() {
         CoroutineScope(Dispatchers.IO).launch {
             val albums = fetchAlbums()
@@ -91,7 +92,7 @@ class AlbumsFragment : Fragment() {
             }
         }
     }
-    // Pobieranie danych albumów
+
     private fun fetchAlbums(): List<Album> {
         val albumList = mutableListOf<Album>()
         val contentResolver = requireActivity().contentResolver
@@ -133,7 +134,6 @@ class AlbumsFragment : Fragment() {
         return albumList
     }
 
-    // Zliczanie mediów w albumach
     private fun getMediaCount(contentResolver: ContentResolver, albumId: String, uri: Uri): Int {
         val projection = arrayOf(MediaStore.MediaColumns._ID)
         val selection = "${MediaStore.MediaColumns.BUCKET_ID} = ?"
