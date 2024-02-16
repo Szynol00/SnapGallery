@@ -9,9 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.snapgallery.R
 import com.example.snapgallery.model.Album
-class AlbumAdapter(private var albums: List<Album>) : RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>() {
+class AlbumAdapter(private var albums: List<Album>, private val listener: OnAlbumClickListener) : RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>() {
+
+    interface OnAlbumClickListener {
+        fun onAlbumClick(album: Album)
+    }
+
     private var allAlbums: List<Album> = albums
     // Klasa ViewHolder dla każdego elementu albumu w RecyclerView
+
     class AlbumViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val thumbnailImageView: ImageView = view.findViewById(R.id.album_thumbnail)
         val albumNameTextView: TextView = view.findViewById(R.id.album_title)
@@ -38,6 +44,10 @@ class AlbumAdapter(private var albums: List<Album>) : RecyclerView.Adapter<Album
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_error)
                 .into(holder.thumbnailImageView)
+        }
+
+        holder.itemView.setOnClickListener {
+            listener.onAlbumClick(album)
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.snapgallery.fragment
 import android.Manifest
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -21,6 +22,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.snapgallery.R
+import com.example.snapgallery.activity.AlbumDetailsActivity
 import com.example.snapgallery.adapter.AlbumAdapter
 import com.example.snapgallery.model.Album
 import com.google.android.material.snackbar.Snackbar
@@ -62,7 +64,18 @@ class AlbumsFragment : Fragment() {
             }
         })
 
-        albumAdapter = AlbumAdapter(emptyList())
+        albumAdapter = AlbumAdapter(emptyList(), object : AlbumAdapter.OnAlbumClickListener {
+            override fun onAlbumClick(album: Album) {
+                // Tutaj obsługuj kliknięcie, np. rozpoczynając nową aktywność z nazwą albumu
+                val intent = Intent(context, AlbumDetailsActivity::class.java).apply {
+                    putExtra("album_name", album.name)
+                    putExtra("album_id", album.id) // Dodaj tę linię
+                }
+
+                startActivity(intent)
+            }
+        })
+
         recyclerView = view.findViewById(R.id.albumsRecyclerView)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
         recyclerView.adapter = albumAdapter

@@ -42,5 +42,9 @@
             android:hardwareAccelerated="true">
         </activity>
 
+        <activity
+            android:name=".activity.AlbumDetailsActivity">
+        </activity>
+
     </application>
 </manifest>
