@@ -3,7 +3,6 @@ package com.example.snapgallery.activity
 import android.content.ContentUris
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -12,6 +11,8 @@ import com.example.snapgallery.R
 import com.example.snapgallery.adapter.MediaAdapter
 import com.example.snapgallery.model.MediaItem
 import com.example.snapgallery.model.MediaType
+import android.content.res.Configuration
+
 
 class AlbumDetailsActivity : AppCompatActivity() {
 
@@ -27,8 +28,16 @@ class AlbumDetailsActivity : AppCompatActivity() {
         val albumName = intent.getStringExtra("album_name")
         albumNameTextView.text = albumName ?: "Brak nazwy albumu"
 
-        // Skonfiguruj RecyclerView z MediaAdapter
-        albumContentRecyclerView.layoutManager = GridLayoutManager(this, 3)
+        // Ustal liczbę kolumn w zależności od orientacji ekranu
+        val orientation = resources.configuration.orientation
+        val spanCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            5 // Położenie poziome
+        } else {
+            3 // Położenie pionowe
+        }
+
+        // Skonfiguruj RecyclerView z MediaAdapter i dynamiczną liczbą kolumn
+        albumContentRecyclerView.layoutManager = GridLayoutManager(this, spanCount)
 
         // Pobierz media dla danego albumu
         val mediaItems = fetchMedia(albumId) // Upewnij się, że ta metoda zwraca odpowiednie dane

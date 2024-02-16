@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.ContentUris
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -62,7 +63,14 @@ class VideosFragment : Fragment() {
 
     private fun loadVideos(view: View) {
         val recyclerView: RecyclerView = view.findViewById(R.id.videosRecyclerView)
-        recyclerView.layoutManager = GridLayoutManager(context, 3)
+        val orientation = resources.configuration.orientation
+        val spanCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            5 // Poziome położenie
+        } else {
+            3 // Pionowe położenie
+        }
+
+        recyclerView.layoutManager = GridLayoutManager(context, spanCount)
         val videos = fetchVideos()
 
         val adapter = VideoAdapter(videos) { videoUri ->
@@ -74,6 +82,7 @@ class VideosFragment : Fragment() {
 
         recyclerView.adapter = adapter
     }
+
 
     private fun fetchVideos(): List<Uri> {
         val videoList = mutableListOf<Uri>()

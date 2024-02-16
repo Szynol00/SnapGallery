@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.ContentUris
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -70,7 +71,15 @@ class ImagesFragment : Fragment() {
     // Metoda do ładowania obrazów do RecyclerView
     private fun loadImages(view: View) {
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = GridLayoutManager(context, 3)
+        val orientation = resources.configuration.orientation
+        val spanCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            5 // Poziome położenie
+        } else {
+            3 // Pionowe położenie
+        }
+
+        recyclerView.layoutManager = GridLayoutManager(context, spanCount)
+
         val images = fetchImages()
 
         // Zapisywanie obrazów do repozytorium
@@ -87,6 +96,7 @@ class ImagesFragment : Fragment() {
 
         recyclerView.adapter = adapter
     }
+
 
 
     // Metoda do pobierania obrazów z urządzenia

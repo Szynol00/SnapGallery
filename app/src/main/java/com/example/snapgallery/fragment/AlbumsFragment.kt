@@ -5,6 +5,7 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -77,11 +78,18 @@ class AlbumsFragment : Fragment() {
         })
 
         recyclerView = view.findViewById(R.id.albumsRecyclerView)
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
+        val orientation = resources.configuration.orientation
+        val spanCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            3 // Poziome położenie
+        } else {
+            2 // Pionowe położenie
+        }
+        recyclerView.layoutManager = GridLayoutManager(context, spanCount)
         recyclerView.adapter = albumAdapter
 
         checkPermissionAndLoadAlbums()
     }
+
 
     private fun checkPermissionAndLoadAlbums() {
         val permission = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
