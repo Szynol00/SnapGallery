@@ -32,6 +32,8 @@ class MediaAdapter(private val mediaItems: List<MediaItem>, private val onMediaC
             // Załaduj miniaturę mediów (zakładając, że używasz Glide)
             Glide.with(view.context)
                 .load(mediaItem.uri)
+                .placeholder(R.drawable.image_placeholder) // Ikona wyświetlana podczas ładowania
+                .error(R.drawable.image_error) // Ikona wyświetlana w przypadku błędu
                 .into(mediaImage)
 
             // Ustaw widoczność ikony odtwarzania

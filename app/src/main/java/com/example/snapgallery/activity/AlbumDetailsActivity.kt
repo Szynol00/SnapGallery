@@ -38,14 +38,10 @@ class AlbumDetailsActivity : AppCompatActivity() {
             // Tutaj zdefiniuj, co ma się dziać po kliknięciu na element
             // Na przykład możesz uruchomić aktywność z pełnym ekranem zdjęcia lub odtwarzanie filmu
         }
-        Log.d("AlbumDetails", "Querying media for album ID: $albumId")
-
     }
 
     private fun fetchMedia(albumId: String?): List<MediaItem> {
         return fetchImages(albumId) + fetchVideos(albumId)
-        Log.d("AlbumDetails", "Querying media for album ID: $albumId")
-
     }
 
     private fun fetchImages(albumId: String?): List<MediaItem> {
@@ -74,8 +70,6 @@ class AlbumDetailsActivity : AppCompatActivity() {
         }
 
         return imageList
-        Log.d("AlbumDetails", "Querying media for album ID: $albumId")
-
     }
 
     private fun fetchVideos(albumId: String?): List<MediaItem> {
@@ -103,8 +97,6 @@ class AlbumDetailsActivity : AppCompatActivity() {
         }
 
         return videoList
-        Log.d("AlbumDetails", "Querying media for album ID: $albumId")
-
     }
 
 
