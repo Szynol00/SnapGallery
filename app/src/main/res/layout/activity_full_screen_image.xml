@@ -31,11 +31,12 @@
         android:weightSum="4"> <!-- Equal to the total weight of all children -->
 
         <ImageView
+            android:id="@+id/share_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/baseline_share_24"
-            android:contentDescription="@string/share" />
+            android:contentDescription="@string/share"
+            android:src="@drawable/baseline_share_24" />
 
         <ImageView
             android:layout_width="0dp"

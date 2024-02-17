@@ -1,5 +1,6 @@
 package com.example.snapgallery.activity
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
@@ -30,6 +31,17 @@ class FullScreenImageActivity : AppCompatActivity() {
             finish()
         }
 
+        /*
+        val shareButton = findViewById<ImageView>(R.id.share_button)
+        backArrow.setOnClickListener {
+            val shareIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                // Example: content://com.google.android.apps.photos.contentprovider/...
+                putExtra(Intent.EXTRA_STREAM, uriToImage)
+                type = "image/jpeg"
+            }
+            startActivity(Intent.createChooser(shareIntent, null))
+        }*/
     }
 }
 
