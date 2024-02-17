@@ -1,9 +1,10 @@
 package com.example.snapgallery.activity
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.example.snapgallery.R
@@ -11,6 +12,7 @@ import com.example.snapgallery.databinding.ActivityMainBinding
 import com.example.snapgallery.fragment.AlbumsFragment
 import com.example.snapgallery.fragment.ImagesFragment
 import com.example.snapgallery.fragment.VideosFragment
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -52,6 +54,15 @@ class MainActivity : AppCompatActivity() {
         // Tworzenie menu z pliku XML
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.top_tool_bar, menu)
+
+        //  store the menu to var when creating options menu
+        menu?.findItem(R.id.open_camera_button)?.setOnMenuItemClickListener {
+            val intent = Intent(this, CameraActivity::class.java)
+            this.startActivity(intent)
+
+            true
+        }
+
         return true
     }
 

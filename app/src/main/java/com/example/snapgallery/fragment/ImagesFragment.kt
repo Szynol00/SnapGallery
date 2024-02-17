@@ -97,8 +97,6 @@ class ImagesFragment : Fragment() {
         recyclerView.adapter = adapter
     }
 
-
-
     // Metoda do pobierania obrazów z urządzenia
     private fun fetchImages(): List<Uri> {
         val imageList = mutableListOf<Uri>()
