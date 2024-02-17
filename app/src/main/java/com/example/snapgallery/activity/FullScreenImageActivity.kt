@@ -39,7 +39,6 @@ class FullScreenImageActivity : AppCompatActivity() {
             }
             startActivity(Intent.createChooser(shareIntent, null))
         }
-
     }
 }
 
