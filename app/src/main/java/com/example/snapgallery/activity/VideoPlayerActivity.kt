@@ -1,7 +1,9 @@
 package com.example.snapgallery.activity
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
@@ -45,6 +47,17 @@ class VideoPlayerActivity : AppCompatActivity() {
             exoPlayer.setMediaItem(mediaItem)
             exoPlayer.prepare()
             exoPlayer.play()
+
+            val shareButton = findViewById<ImageView>(R.id.share_button)
+            shareButton.setOnClickListener {
+                val shareIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    // Example: content://com.google.android.apps.photos.contentprovider/...
+                    putExtra(Intent.EXTRA_STREAM, videoUri)
+                    type = "video/mp4"
+                }
+                startActivity(Intent.createChooser(shareIntent, null))
+            }
         }
     }
 
