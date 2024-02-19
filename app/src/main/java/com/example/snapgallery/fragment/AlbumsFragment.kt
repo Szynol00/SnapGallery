@@ -118,32 +118,44 @@ class AlbumsFragment : Fragment() {
         val albumList = mutableListOf<Album>()
         val contentResolver = requireActivity().contentResolver
 
-        val projection = arrayOf(
+        // Zdefiniuj projekcję dla obrazów i wideo
+        val imageProjection = arrayOf(
             MediaStore.Images.Media.BUCKET_ID,
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
             MediaStore.Images.Media._ID
         )
 
-        val cursor = contentResolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            projection,
-            null,
-            null,
-            "${MediaStore.Images.Media.DATE_ADDED} ASC"
+        val videoProjection = arrayOf(
+            MediaStore.Video.Media.BUCKET_ID,
+            MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Video.Media._ID
         )
 
+        // Pobierz albumy z obrazami
+        fetchMediaAlbums(contentResolver, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageProjection, albumList)
+
+        // Pobierz albumy z wideo
+        fetchMediaAlbums(contentResolver, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, videoProjection, albumList)
+
+        return albumList
+    }
+
+    private fun fetchMediaAlbums(contentResolver: ContentResolver, uri: Uri, projection: Array<String>, albumList: MutableList<Album>) {
+        val cursor = contentResolver.query(uri, projection, null, null, "${MediaStore.Images.Media.DATE_ADDED} ASC")
+
         cursor?.use {
-            val bucketIdColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID)
-            val bucketNameColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
-            val idColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+            val bucketIdColumn = it.getColumnIndexOrThrow(projection[0])
+            val bucketNameColumn = it.getColumnIndexOrThrow(projection[1])
+            val idColumn = it.getColumnIndexOrThrow(projection[2])
 
             while (it.moveToNext()) {
                 val id = it.getString(bucketIdColumn)
                 val name = it.getString(bucketNameColumn)
-                val imageId = it.getLong(idColumn)
-                val thumbnailUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageId)
+                val mediaId = it.getLong(idColumn)
+                val thumbnailUri = ContentUris.withAppendedId(uri, mediaId)
 
-                if (albumList.none { album -> album.id == id }) {
+                val existingAlbum = albumList.find { album -> album.id == id }
+                if (existingAlbum == null) {
                     val imageCount = getMediaCount(contentResolver, id, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                     val videoCount = getMediaCount(contentResolver, id, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
                     val album = Album(id, name, imageCount, videoCount, thumbnailUri.toString())
@@ -151,9 +163,8 @@ class AlbumsFragment : Fragment() {
                 }
             }
         }
-
-        return albumList
     }
+
 
     private fun getMediaCount(contentResolver: ContentResolver, albumId: String, uri: Uri): Int {
         val projection = arrayOf(MediaStore.MediaColumns._ID)

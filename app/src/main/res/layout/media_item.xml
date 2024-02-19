@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:scaleType="centerCrop"
-        android:contentDescription="media" />
+        android:contentDescription="@string/media" />
 
     <ImageView
         android:id="@+id/play_icon"
@@ -17,6 +17,7 @@
         android:layout_gravity="bottom|start"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
-        android:contentDescription="play_video"
+        android:src="@drawable/baseline_play_circle_10"
+        android:contentDescription="@string/play_video"
         android:visibility="gone"/>
 </FrameLayout>

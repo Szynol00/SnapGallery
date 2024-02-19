@@ -24,4 +24,6 @@
     <string name="switch_lens">Switch Lens</string>
     <string name="previous">previous</string>
     <string name="next">next</string>
+    <string name="play_video">play_video</string>
+    <string name="media">media</string>
 </resources>
