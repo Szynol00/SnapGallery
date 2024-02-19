@@ -12,45 +12,74 @@ import com.example.snapgallery.adapter.MediaAdapter
 import com.example.snapgallery.model.MediaItem
 import com.example.snapgallery.model.MediaType
 import android.content.res.Configuration
-
+import android.net.Uri
+import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.ImageView
 
 class AlbumDetailsActivity : AppCompatActivity() {
+
+    private lateinit var albumContentRecyclerView: RecyclerView
+    private lateinit var emptyTextView: TextView
+    private var allMediaItems = listOf<MediaItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_album_details)
 
         val albumNameTextView: TextView = findViewById(R.id.albumNameTextView)
-        val albumContentRecyclerView: RecyclerView = findViewById(R.id.albumContentRecyclerView)
+        albumContentRecyclerView = findViewById(R.id.albumContentRecyclerView)
+        emptyTextView = findViewById(R.id.empty_text_view)
 
-        // Pobierz album_id i album_name z intencji
+        val backArrow: ImageView = findViewById(R.id.backArrow)
+        backArrow.setOnClickListener {
+            onBackPressed() // Wywołaj metodę onBackPressed(), aby wrócić do poprzedniego widoku
+        }
+
         val albumId = intent.getStringExtra("album_id")
         val albumName = intent.getStringExtra("album_name")
         albumNameTextView.text = albumName ?: "Brak nazwy albumu"
 
-        // Ustal liczbę kolumn w zależności od orientacji ekranu
-        val orientation = resources.configuration.orientation
-        val spanCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            5 // Położenie poziome
-        } else {
-            3 // Położenie pionowe
+        configureRecyclerView()
+
+        allMediaItems = fetchMedia(albumId ?: "")
+
+        findViewById<Button>(R.id.showImagesButton).setOnClickListener {
+            displayMediaType(MediaType.IMAGE)
         }
 
-        // Skonfiguruj RecyclerView z MediaAdapter i dynamiczną liczbą kolumn
+        findViewById<Button>(R.id.showVideosButton).setOnClickListener {
+            displayMediaType(MediaType.VIDEO)
+        }
+
+        displayMediaType(MediaType.IMAGE)
+    }
+
+    private fun configureRecyclerView() {
+        val orientation = resources.configuration.orientation
+        val spanCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 5 else 3
         albumContentRecyclerView.layoutManager = GridLayoutManager(this, spanCount)
+    }
 
-        // Pobierz media dla danego albumu
-        val mediaItems = fetchMedia(albumId) // Upewnij się, że ta metoda zwraca odpowiednie dane
+    private fun displayMediaType(mediaType: MediaType) {
+        val filteredMediaItems = allMediaItems.filter { it.type == mediaType }
+        albumContentRecyclerView.adapter = MediaAdapter(filteredMediaItems) { mediaItem ->
+            // Tutaj możesz zdefiniować, co ma się dziać po kliknięciu na element
+        }
 
-        // Ustaw adapter z obsługą kliknięć na elementy mediów
-        albumContentRecyclerView.adapter = MediaAdapter(mediaItems) { mediaItem ->
-            // Tutaj zdefiniuj, co ma się dziać po kliknięciu na element
-            // Na przykład możesz uruchomić aktywność z pełnym ekranem zdjęcia lub odtwarzanie filmu
+        // Ustaw widoczność TextView w zależności od stanu listy mediów
+        if (filteredMediaItems.isEmpty()) {
+            emptyTextView.visibility = View.VISIBLE
+        } else {
+            emptyTextView.visibility = View.GONE
         }
     }
 
-    private fun fetchMedia(albumId: String?): List<MediaItem> {
-        return fetchImages(albumId) + fetchVideos(albumId)
+    private fun fetchMedia(albumId: String): List<MediaItem> {
+        return fetchImages(albumId) + fetchVideos(albumId).map { uri ->
+            MediaItem(0L, uri, MediaType.VIDEO)
+        }
     }
 
     private fun fetchImages(albumId: String?): List<MediaItem> {
@@ -81,33 +110,28 @@ class AlbumDetailsActivity : AppCompatActivity() {
         return imageList
     }
 
-    private fun fetchVideos(albumId: String?): List<MediaItem> {
-        val videoList = mutableListOf<MediaItem>()
+    private fun fetchVideos(albumId: String): List<Uri> {
+        val videoList = mutableListOf<Uri>()
         val projection = arrayOf(MediaStore.Video.Media._ID)
-
         val selection = "${MediaStore.Video.Media.BUCKET_ID} = ?"
         val selectionArgs = arrayOf(albumId)
 
-        val cursor = contentResolver.query(
+        contentResolver.query(
             MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
             projection,
-            if (albumId != null) selection else null,
-            if (albumId != null) selectionArgs else null,
-            MediaStore.Video.Media.DATE_TAKEN + " DESC"
-        )
-
-        cursor?.use {
-            val idColumn = it.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
-            while (it.moveToNext()) {
-                val id = it.getLong(idColumn)
+            selection,
+            selectionArgs,
+            "${MediaStore.Video.Media.DATE_TAKEN} DESC"
+        )?.use { cursor ->
+            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(idColumn)
                 val contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
-                videoList.add(MediaItem(id, contentUri, MediaType.VIDEO))
+                videoList.add(contentUri)
             }
         }
 
         return videoList
     }
-
-
 }
 

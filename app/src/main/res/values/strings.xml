@@ -26,4 +26,6 @@
     <string name="next">next</string>
     <string name="play_video">play_video</string>
     <string name="media">media</string>
+    <string name="no_images">Brak zdjęć</string>
+    <string name="no_videos">Brak filmów</string>
 </resources>

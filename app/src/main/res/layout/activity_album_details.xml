@@ -1,23 +1,69 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/backArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:contentDescription="@string/back"
+    android:src="@drawable/baseline_arrow_back_24" />
+
+    <!-- Nazwa albumu -->
     <TextView
         android:id="@+id/albumNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:textSize="24sp"
         android:textStyle="bold"
         android:padding="12dp"
         android:text="Nazwa Albumu"/>
 
+    <!-- Przyciski do wyboru typu mediów -->
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/albumNameTextView"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/showImagesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Obrazy"
+            android:layout_marginEnd="16dp"/>
+
+        <Button
+            android:id="@+id/showVideosButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filmy"/>
+    </LinearLayout>
+
+    <!-- RecyclerView dla zawartości albumu -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/albumContentRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/albumNameTextView"
+        android:layout_below="@id/buttonContainer"
         android:layout_marginTop="8dp"/>
+
+    <!-- Pusty tekst gdy brak mediów -->
+    <TextView
+        android:id="@+id/empty_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textSize="18sp"
+        android:text="Brak mediów do wyświetlenia"
+        android:visibility="gone" />
 
 </RelativeLayout>
