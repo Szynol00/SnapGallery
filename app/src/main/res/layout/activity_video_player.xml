@@ -23,7 +23,7 @@
     <LinearLayout
         android:id="@+id/linearLayout4"
         android:layout_width="0dp"
-        android:layout_height="35dp"
+        android:layout_height="50dp"
         android:background="#000000"
         android:gravity="clip_vertical"
         android:orientation="horizontal"
@@ -34,6 +34,7 @@
         <ImageView
             android:id="@+id/backArrow"
             android:layout_width="36dp"
+            android:layout_marginStart="16dp"
             android:layout_height="match_parent"
             android:contentDescription="@string/back"
             android:src="@drawable/baseline_arrow_back_24" />
@@ -84,6 +85,32 @@
             android:contentDescription="@string/info"
             android:src="@drawable/baseline_info_24" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/prev_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/baseline_arrow_back_ios_24"
+    android:contentDescription="@string/previous"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="@id/player_view"
+    app:layout_constraintBottom_toBottomOf="@id/player_view"
+    android:visibility="invisible"/>
+
+    <!-- Strzałka "Następny" po prawej stronie PlayerView -->
+    <ImageView
+        android:id="@+id/next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/baseline_arrow_forward_ios_24"
+    android:contentDescription="@string/next"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="@id/player_view"
+    app:layout_constraintBottom_toBottomOf="@id/player_view"
+    android:visibility="invisible"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

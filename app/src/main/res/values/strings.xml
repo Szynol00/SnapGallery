@@ -22,4 +22,6 @@
     <string name="stop_capture">Stop Capture</string>
     <string name="switch_mode">Switch Mode</string>
     <string name="switch_lens">Switch Lens</string>
+    <string name="previous">previous</string>
+    <string name="next">next</string>
 </resources>
