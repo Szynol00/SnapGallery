@@ -55,6 +55,9 @@
         <activity
             android:name=".activity.VideoPlayerActivity"
             android:hardwareAccelerated="true" />
+        <activity
+            android:name=".activity.VideoPlayerAlbumActivity"
+            android:hardwareAccelerated="true" />
         <activity android:name=".activity.AlbumDetailsActivity"/>
     </application>
 

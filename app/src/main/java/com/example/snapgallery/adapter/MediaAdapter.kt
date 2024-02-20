@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.snapgallery.R
 import com.example.snapgallery.activity.FullScreenPhotoAlbumActivity
+import com.example.snapgallery.activity.VideoPlayerAlbumActivity
 import com.example.snapgallery.model.MediaItem
 import com.example.snapgallery.model.MediaType
 
@@ -39,9 +40,10 @@ class MediaAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ImageViewHolder -> holder.bind(context, allMediaItems, position)
-            is VideoViewHolder -> holder.bind(context, allMediaItems[position])
+            is VideoViewHolder -> holder.bind(context, allMediaItems, position) // Zmieniono na przekazanie całej listy i pozycji
         }
     }
+
 
     override fun getItemCount(): Int = allMediaItems.size
 
@@ -75,14 +77,30 @@ class MediaAdapter(
     class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageView: ImageView = itemView.findViewById(R.id.video_view)
 
-        fun bind(context: Context, mediaItem: MediaItem) {
+        fun bind(context: Context, allMediaItems: List<MediaItem>, position: Int) {
+            val mediaItem = allMediaItems[position]
+
             Glide.with(itemView.context)
                 .load(mediaItem.uri)
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_error)
                 .into(imageView)
 
-            // Możesz dodać tutaj obsługę kliknięcia dla filmów, jeśli jest potrzebna
+            itemView.setOnClickListener {
+                // Filtruj tylko filmy
+                val videoUris = allMediaItems.filter { it.type == MediaType.VIDEO }.map { it.uri } as ArrayList<Uri>
+
+                val intent = Intent(context, VideoPlayerAlbumActivity::class.java).apply {
+                    // Przekazanie listy Uri filmów
+                    putParcelableArrayListExtra("albumVideosUri", videoUris)
+                    // Przekazanie indeksu wybranego filmu
+                    putExtra("selectedVideoIndex", videoUris.indexOf(mediaItem.uri))
+                }
+                context.startActivity(intent)
+            }
         }
     }
+
+
+
 }
