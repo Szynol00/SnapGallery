@@ -51,11 +51,6 @@ class HiddenMultimedia : AppCompatActivity() {
                         applicationContext,
                         "Authentication succeeded!", Toast.LENGTH_SHORT
                     ).show()
-
-                    val intent = Intent(this@HiddenMultimedia, MainActivity::class.java)
-                    this@HiddenMultimedia.startActivity(intent)
-
-                    finish()
                 }
 
                 // this method will automatically call when it is failed verify fingerprint
