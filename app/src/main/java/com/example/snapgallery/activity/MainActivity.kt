@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         timer.start()
         countClicks++
 
-        if (countClicks >= 5) {
+        if (countClicks >= 0) {
             // Vibrate for 500 milliseconds
             val v = getSystemService(VIBRATOR_SERVICE) as Vibrator
 
@@ -107,9 +107,6 @@ class MainActivity : AppCompatActivity() {
                         VibrationEffect.DEFAULT_AMPLITUDE
                     )
                 )
-
-                val intent = Intent(this, HiddenMultimedia::class.java)
-                this.startActivity(intent)
             } else v.vibrate(500)
         }
     }
