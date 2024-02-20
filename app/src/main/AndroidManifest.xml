@@ -39,20 +39,20 @@
             android:exported="false" />
         <activity
             android:name=".activity.HiddenMultimedia"
-            android:exported="false" />
-        <!-- Główna aktywność aplikacji -->
-        <activity
-            android:name=".activity.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="true" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity> <!-- Deklaracja FullScreenImageActivity -->
-        <activity
-            android:name=".activity.FullScreenImageActivity"
-            android:exported="false" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <!-- Główna aktywność aplikacji -->
+    <activity
+        android:name=".activity.MainActivity"
+        android:exported="false" />
+    <activity
+        android:name=".activity.FullScreenImageActivity"
+        android:exported="false" />
         <activity
             android:name=".activity.FullScreenPhotoAlbumActivity"
             android:exported="false" />
