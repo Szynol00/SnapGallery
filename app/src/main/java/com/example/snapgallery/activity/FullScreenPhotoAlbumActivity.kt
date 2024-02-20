@@ -26,9 +26,7 @@ class FullScreenPhotoAlbumActivity : AppCompatActivity() {
 
         viewPager = findViewById(R.id.viewPager)
         viewPager.adapter = FullScreenPhotoAlbumAdapter(this, albumImagesUris)
-
-        // Ustawienie ViewPager2 na wybranym obrazie
-        viewPager.currentItem = selectedImageIndex
+        viewPager.setCurrentItem(selectedImageIndex, false)
 
         val backArrow: ImageView = findViewById(R.id.backArrow)
         backArrow.setOnClickListener {
