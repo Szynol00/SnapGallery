@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.OptIn
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
@@ -19,6 +20,7 @@ import com.example.snapgallery.R
 import com.example.snapgallery.VideoRepository
 import androidx.media3.ui.PlayerControlView
 import java.io.File
+import java.io.FileNotFoundException
 
 
 class VideoPlayerActivity : AppCompatActivity() {
@@ -47,6 +49,10 @@ class VideoPlayerActivity : AppCompatActivity() {
             deleteCurrentVideo()
         }
 
+        val infoButton = findViewById<ImageView>(R.id.info_button)
+
+
+
         backArrow.setOnClickListener {
             finish()
         }
@@ -57,6 +63,14 @@ class VideoPlayerActivity : AppCompatActivity() {
         nextButton.setOnClickListener {
             loadNextVideo()
         }
+
+        infoButton.setOnClickListener {
+            val videoUri: Uri? = intent.getParcelableExtra("videoUri")
+            videoUri?.let { uri ->
+                showVideoInfo(uri)
+            }
+        }
+
 
         initializePlayer()
     }
@@ -120,8 +134,8 @@ class VideoPlayerActivity : AppCompatActivity() {
             deleteCurrentVideo()
         }
 
-
     }
+
 
     private fun deleteCurrentVideo() {
         val currentVideoUri = VideoRepository.getVideo(VideoRepository.selectedVideoIndex)
@@ -153,6 +167,37 @@ class VideoPlayerActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun showVideoInfo(videoUri: Uri) {
+        val fileName = videoUri.lastPathSegment ?: "Niedostępne"
+
+        try {
+            contentResolver.openFileDescriptor(videoUri, "r")?.use { parcelFileDescriptor ->
+                val fileSize = parcelFileDescriptor.statSize // Rozmiar pliku w bajtach
+                val fileSizeInKB = fileSize / 1024
+                val fileSizeInMB = fileSizeInKB / 1024
+
+                // Przygotowanie i wyświetlenie informacji o wideo
+                val fileInfo = StringBuilder().apply {
+                    append("Nazwa pliku: $fileName\n")
+                    append("Ścieżka/URI: $videoUri\n")
+                    append("Rozmiar wideo: ${fileSizeInKB}KB (${fileSizeInMB}MB)")
+                }.toString()
+
+                // Użycie AlertDialog do wyświetlenia informacji
+                AlertDialog.Builder(this).apply {
+                    setTitle("Informacje o wideo")
+                    setMessage(fileInfo)
+                    setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                    show()
+                }
+            }
+        } catch (e: FileNotFoundException) {
+            Toast.makeText(this, "Plik wideo nie został znaleziony.", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Błąd podczas odczytywania informacji o wideo: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
 
 
 

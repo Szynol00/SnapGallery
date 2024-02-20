@@ -3,9 +3,11 @@ package com.example.snapgallery.activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
@@ -13,6 +15,7 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.example.snapgallery.R
+import java.io.FileNotFoundException
 
 class VideoPlayerAlbumActivity : AppCompatActivity() {
     private var player: ExoPlayer? = null
@@ -32,10 +35,32 @@ class VideoPlayerAlbumActivity : AppCompatActivity() {
         playerView = findViewById(R.id.player_view)
         val prevButton = findViewById<ImageView>(R.id.prev_button)
         val nextButton = findViewById<ImageView>(R.id.next_button)
-
+        val backArrow = findViewById<ImageView>(R.id.backArrow)
         val deleteButton = findViewById<ImageView>(R.id.delete_button)
+        val infoButton = findViewById<ImageView>(R.id.info_button)
+
+
         deleteButton.setOnClickListener {
             deleteCurrentVideo()
+        }
+
+        backArrow.setOnClickListener {
+            finish()
+        }
+
+        prevButton.setOnClickListener {
+            loadPreviousVideo()
+        }
+
+        nextButton.setOnClickListener {
+            loadNextVideo()
+        }
+
+        // Ustawienie słuchacza kliknięcia dla przycisku informacji
+        infoButton.setOnClickListener {
+            // Pobranie aktualnego URI wideo
+            val videoUri = albumVideosUris[currentVideoIndex]
+            showVideoInfo(videoUri)
         }
 
 
@@ -55,6 +80,8 @@ class VideoPlayerAlbumActivity : AppCompatActivity() {
         // Ustawienie początkowej widoczności przycisków
         updateNavigationButtons()
     }
+
+
 
     private fun initializePlayer() {
         player = ExoPlayer.Builder(this).build().apply {
@@ -100,6 +127,38 @@ class VideoPlayerAlbumActivity : AppCompatActivity() {
     }
 
 
+
+
+    private fun showVideoInfo(videoUri: Uri) {
+        val fileName = videoUri.lastPathSegment ?: "Niedostępne"
+
+        try {
+            contentResolver.openFileDescriptor(videoUri, "r")?.use { parcelFileDescriptor ->
+                val fileSize = parcelFileDescriptor.statSize // Rozmiar pliku w bajtach
+                val fileSizeInKB = fileSize / 1024
+                val fileSizeInMB = fileSizeInKB / 1024
+
+                // Przygotowanie i wyświetlenie informacji o wideo
+                val fileInfo = StringBuilder().apply {
+                    append("Nazwa pliku: $fileName\n")
+                    append("Ścieżka/URI: $videoUri\n")
+                    append("Rozmiar wideo: ${fileSizeInKB}KB (${fileSizeInMB}MB)")
+                }.toString()
+
+                // Użycie AlertDialog do wyświetlenia informacji
+                AlertDialog.Builder(this).apply {
+                    setTitle("Informacje o wideo")
+                    setMessage(fileInfo)
+                    setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                    show()
+                }
+            }
+        } catch (e: FileNotFoundException) {
+            Toast.makeText(this, "Plik wideo nie został znaleziony.", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Błąd podczas odczytywania informacji o wideo: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
 
 
     private fun loadNextVideo() {

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.snapgallery.ImageRepository
@@ -27,12 +28,20 @@ class FullScreenImageActivity : AppCompatActivity() {
         viewPager.adapter = adapter
         viewPager.setCurrentItem(selectedImageIndex, false)
 
+        setupBackButton()
+        setupShareButton(selectedImageIndex)
+        setupDeleteButton()
+        setupInfoButton(selectedImageIndex) // Dodaj tę metodę do obsługi kliknięcia w ikonę informacji
+    }
+
+    private fun setupBackButton() {
         val backArrow = findViewById<ImageView>(R.id.backArrow)
         backArrow.setOnClickListener {
-            // Obsługa kliknięcia przycisku wstecz, zazwyczaj zakończenie aktywności
             finish()
         }
+    }
 
+    private fun setupShareButton(selectedImageIndex: Int) {
         val shareButton = findViewById<ImageView>(R.id.share_button)
         shareButton.setOnClickListener {
             val shareIntent: Intent = Intent().apply {
@@ -42,12 +51,56 @@ class FullScreenImageActivity : AppCompatActivity() {
             }
             startActivity(Intent.createChooser(shareIntent, null))
         }
+    }
 
+    private fun setupDeleteButton() {
         val deleteButton = findViewById<ImageView>(R.id.delete_button)
         deleteButton.setOnClickListener {
             deleteCurrentImage()
         }
     }
+
+    private fun setupInfoButton(selectedImageIndex: Int) {
+        val infoButton = findViewById<ImageView>(R.id.info_button) // Upewnij się, że masz odpowiedni ID w swoim XML
+        infoButton.setOnClickListener {
+            // Wywołanie zmodyfikowanej funkcji, która pokazuje zarówno nazwę, jak i rozmiar zdjęcia
+            showImageInfo(selectedImageIndex)
+        }
+    }
+
+    private fun showImageInfo(index: Int) {
+        val imageUri = ImageRepository.images[index]
+        val imageName = imageUri.lastPathSegment ?: "Informacja niedostępna"
+
+        try {
+            contentResolver.openInputStream(imageUri)?.use { inputStream ->
+                // Odczyt rozmiaru pliku
+                val fileSize = inputStream.available() // Rozmiar w bajtach
+                val fileSizeInKB = fileSize / 1024
+                val fileSizeInMB = fileSizeInKB / 1024
+
+                // Przygotowanie i wyświetlenie informacji
+                val fileInfo = StringBuilder().apply {
+                    append("Nazwa pliku: $imageName\n")
+                    append("URI: $imageUri\n") // Dodanie URI do informacji
+                    append("Rozmiar: ${fileSizeInKB}KB (${fileSizeInMB}MB)")
+                }.toString()
+
+                // Użycie AlertDialog do wyświetlenia informacji
+                AlertDialog.Builder(this).apply {
+                    title = "Informacje o obrazie"
+                    setMessage(fileInfo)
+                    setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
+                    show()
+                }
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Błąd przy odczycie rozmiaru pliku: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+
+
     private fun deleteCurrentImage() {
         val currentPosition = viewPager.currentItem
         val imageUri = ImageRepository.images[currentPosition]

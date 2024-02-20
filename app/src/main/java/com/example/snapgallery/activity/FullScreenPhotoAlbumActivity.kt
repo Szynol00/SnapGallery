@@ -9,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.snapgallery.R
 import com.example.snapgallery.adapter.FullScreenPhotoAlbumAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.example.snapgallery.ImageRepository
 import com.example.snapgallery.adapter.FullScreenImageAdapter
 import java.io.File
@@ -27,6 +28,8 @@ class FullScreenPhotoAlbumActivity : AppCompatActivity() {
 
         // Pobieranie indeksu wybranego obrazu
         val selectedImageIndex: Int = intent.getIntExtra("selectedImageIndex", 0)
+
+        setupInfoButton(selectedImageIndex)
 
         viewPager = findViewById(R.id.viewPager)
         viewPager.adapter = FullScreenPhotoAlbumAdapter(this, albumImagesUris)
@@ -54,6 +57,46 @@ class FullScreenPhotoAlbumActivity : AppCompatActivity() {
             deleteCurrentImage()
         }
     }
+
+    private fun setupInfoButton(selectedImageIndex: Int) {
+        val infoButton = findViewById<ImageView>(R.id.info_button) // Upewnij się, że masz odpowiedni ID w swoim XML
+        infoButton.setOnClickListener {
+            // Wywołanie zmodyfikowanej funkcji, która pokazuje zarówno nazwę, jak i rozmiar zdjęcia
+            showImageInfo(selectedImageIndex)
+        }
+    }
+
+    private fun showImageInfo(index: Int) {
+        val imageUri = ImageRepository.images[index]
+        val imageName = imageUri.lastPathSegment ?: "Informacja niedostępna"
+
+        try {
+            contentResolver.openInputStream(imageUri)?.use { inputStream ->
+                // Odczyt rozmiaru pliku
+                val fileSize = inputStream.available() // Rozmiar w bajtach
+                val fileSizeInKB = fileSize / 1024
+                val fileSizeInMB = fileSizeInKB / 1024
+
+                // Przygotowanie i wyświetlenie informacji
+                val fileInfo = StringBuilder().apply {
+                    append("Nazwa pliku: $imageName\n")
+                    append("URI: $imageUri\n") // Dodanie URI do informacji
+                    append("Rozmiar: ${fileSizeInKB}KB (${fileSizeInMB}MB)")
+                }.toString()
+
+                // Użycie AlertDialog do wyświetlenia informacji
+                AlertDialog.Builder(this).apply {
+                    title = "Informacje o obrazie"
+                    setMessage(fileInfo)
+                    setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
+                    show()
+                }
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Błąd przy odczycie rozmiaru pliku: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun deleteCurrentImage() {
         val currentPosition = viewPager.currentItem
         val imageUri = ImageRepository.images[currentPosition]
