@@ -107,6 +107,9 @@ class MainActivity : AppCompatActivity() {
                         VibrationEffect.DEFAULT_AMPLITUDE
                     )
                 )
+
+                val intent = Intent(this, HiddenMultimedia::class.java)
+                this.startActivity(intent)
             } else v.vibrate(500)
         }
     }
