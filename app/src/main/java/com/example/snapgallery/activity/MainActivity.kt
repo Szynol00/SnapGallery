@@ -8,7 +8,6 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.Menu
 import android.view.MenuInflater
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -17,9 +16,6 @@ import com.example.snapgallery.databinding.ActivityMainBinding
 import com.example.snapgallery.fragment.AlbumsFragment
 import com.example.snapgallery.fragment.ImagesFragment
 import com.example.snapgallery.fragment.VideosFragment
-import java.lang.String
-import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
@@ -87,6 +83,17 @@ class MainActivity : AppCompatActivity() {
             replaceFragment(ImagesFragment())
             // Ustawienie domyślnego wybranego elementu w BottomNavigationView
             binding.bottomNavigationView.selectedItemId = R.id.images
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        when (currentTab) {
+            "images" -> replaceFragment(ImagesFragment())
+            "videos" -> replaceFragment(VideosFragment())
+            "albums" -> replaceFragment(AlbumsFragment())
+            else -> {}
         }
     }
 
