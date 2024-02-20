@@ -3,15 +3,17 @@ package com.example.snapgallery
 import android.net.Uri
 
 object VideoRepository {
-    var videos: List<Uri> = emptyList()
-    var selectedVideoIndex: Int = -1 // Kotlin automatycznie generuje getter i setter dla tej zmiennej
+    var videos: MutableList<Uri> = mutableListOf()
+    var selectedVideoIndex: Int = -1
 
     fun addVideo(uri: Uri) {
-        videos = videos + uri
+        videos.add(uri)
     }
 
-    fun removeVideo(uri: Uri) {
-        videos = videos.filter { it != uri }
+    fun removeVideoAt(index: Int) {
+        if (videos.size > index) {
+            videos.removeAt(index)
+        }
     }
 
     fun getVideo(index: Int): Uri? = videos.getOrNull(index)

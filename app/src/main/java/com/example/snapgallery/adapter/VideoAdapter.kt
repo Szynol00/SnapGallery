@@ -38,7 +38,8 @@ class VideoAdapter(private val videos: List<Uri>, private val onVideoClick: (Uri
             // Przykład wywołania metody z VideoRepository lub ViewModel
             // Zakładam, że VideoRepository może przechowywać wybrane indeksy i listę Uri
             VideoRepository.selectedVideoIndex = position
-            VideoRepository.videos = videos
+            VideoRepository.videos = videos.toMutableList()
+
 
             val intent = Intent(holder.videoView.context, VideoPlayerActivity::class.java)
             // Możesz przekazać dodatkowe dane, jeśli są potrzebne, np. indeks wybranego filmu

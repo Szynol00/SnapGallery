@@ -33,6 +33,12 @@ class VideoPlayerAlbumActivity : AppCompatActivity() {
         val prevButton = findViewById<ImageView>(R.id.prev_button)
         val nextButton = findViewById<ImageView>(R.id.next_button)
 
+        val deleteButton = findViewById<ImageView>(R.id.delete_button)
+        deleteButton.setOnClickListener {
+            deleteCurrentVideo()
+        }
+
+
         albumVideosUris = intent.getParcelableArrayListExtra<Uri>("albumVideosUri") ?: arrayListOf()
         currentVideoIndex = intent.getIntExtra("selectedVideoIndex", 0)
 
@@ -63,6 +69,38 @@ class VideoPlayerAlbumActivity : AppCompatActivity() {
         }
         playVideo(currentVideoIndex)
     }
+
+    private fun deleteCurrentVideo() {
+        if (albumVideosUris.isNotEmpty()) {
+            val videoUri = albumVideosUris[currentVideoIndex]
+
+            try {
+                val rowsDeleted = contentResolver.delete(videoUri, null, null)
+                if (rowsDeleted == 1) {
+                    Toast.makeText(this, "Wideo zostało pomyślnie usunięte.", Toast.LENGTH_SHORT).show()
+
+                    albumVideosUris.removeAt(currentVideoIndex)
+                    if (albumVideosUris.isEmpty()) {
+                        finish() // Zakończ aktywność, jeśli nie ma więcej wideo
+                    } else {
+                        // Ajust currentVideoIndex after deletion
+                        currentVideoIndex = if (currentVideoIndex >= albumVideosUris.size) 0 else currentVideoIndex
+                        playVideo(currentVideoIndex) // Odtwórz następne wideo
+                        updateNavigationButtons() // Zaktualizuj widoczność przycisków nawigacyjnych
+                    }
+                } else {
+                    Toast.makeText(this, "Nie udało się usunąć wideo.", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: SecurityException) {
+                Toast.makeText(this, "Brak uprawnień do usunięcia wideo.", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(this, "Wystąpił problem podczas usuwania wideo.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+
 
     private fun loadNextVideo() {
         currentVideoIndex = (currentVideoIndex + 1) % albumVideosUris.size

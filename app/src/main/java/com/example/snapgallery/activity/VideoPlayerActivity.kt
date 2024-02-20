@@ -18,11 +18,14 @@ import androidx.media3.ui.PlayerView
 import com.example.snapgallery.R
 import com.example.snapgallery.VideoRepository
 import androidx.media3.ui.PlayerControlView
+import java.io.File
 
 
 class VideoPlayerActivity : AppCompatActivity() {
     private var player: ExoPlayer? = null
     private lateinit var playerView: PlayerView
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +41,11 @@ class VideoPlayerActivity : AppCompatActivity() {
         val prevButton = findViewById<ImageView>(R.id.prev_button)
         val nextButton = findViewById<ImageView>(R.id.next_button)
         val backArrow = findViewById<ImageView>(R.id.backArrow)
+
+        val deleteButton = findViewById<ImageView>(R.id.delete_button)
+        deleteButton.setOnClickListener {
+            deleteCurrentVideo()
+        }
 
         backArrow.setOnClickListener {
             finish()
@@ -107,7 +115,46 @@ class VideoPlayerActivity : AppCompatActivity() {
             }
         }
 
+        val deleteButton = findViewById<ImageView>(R.id.delete_button)
+        deleteButton.setOnClickListener {
+            deleteCurrentVideo()
+        }
+
+
     }
+
+    private fun deleteCurrentVideo() {
+        val currentVideoUri = VideoRepository.getVideo(VideoRepository.selectedVideoIndex)
+
+        currentVideoUri?.let { uri ->
+            try {
+                val rowsDeleted = contentResolver.delete(uri, null, null)
+                if (rowsDeleted == 1) {
+                    Toast.makeText(this, "Wideo zostało pomyślnie usunięte.", Toast.LENGTH_SHORT).show()
+
+                    // Aktualizacja repozytorium po usunięciu wideo
+                    VideoRepository.removeVideoAt(VideoRepository.selectedVideoIndex)
+
+                    // Załaduj następne wideo lub zakończ, jeśli to było ostatnie wideo
+                    if (VideoRepository.videos.isNotEmpty()) {
+                        VideoRepository.selectedVideoIndex = (VideoRepository.selectedVideoIndex) % VideoRepository.videos.size
+                        playVideo(VideoRepository.getVideo(VideoRepository.selectedVideoIndex)!!)
+                    } else {
+                        finish()
+                    }
+                } else {
+                    Toast.makeText(this, "Nie udało się usunąć wideo.", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: SecurityException) {
+                Toast.makeText(this, "Brak uprawnień do usunięcia wideo.", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(this, "Wystąpił problem podczas usuwania wideo.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+
 
 
     override fun onStart() {
@@ -176,3 +223,5 @@ class VideoPlayerActivity : AppCompatActivity() {
 
 
 }
+
+
