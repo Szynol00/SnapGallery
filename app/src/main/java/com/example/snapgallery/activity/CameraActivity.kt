@@ -5,6 +5,7 @@ import android.Manifest
 import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.hardware.SensorEventListener
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -35,11 +36,23 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorManager
 
 typealias LumaListener = (luma: Double) -> Unit
 
-class CameraActivity : AppCompatActivity() {
+class CameraActivity : AppCompatActivity(), SensorEventListener {
+
+    private lateinit var sensorManager: SensorManager
+    private var accelerometer: Sensor? = null
+    private val shakeThreshold = 3f
+    private var lastX: Float = 0f
+    private var lastY: Float = 0f
+    private var lastZ: Float = 0f
+    private var lastShakeTime: Long = 0
     private lateinit var viewBinding: ActivityCameraBinding
+
 
     private var imageCapture: ImageCapture? = null
 
@@ -78,6 +91,10 @@ class CameraActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
         viewBinding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
@@ -103,7 +120,57 @@ class CameraActivity : AppCompatActivity() {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
+    override fun onResume() {
+        super.onResume()
+        // Rejestracja listenera sensora akcelerometru
+        accelerometer?.also { sensor ->
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+    }
 
+    override fun onPause() {
+        super.onPause()
+        // Wyrejestrowanie listenera sensora akcelerometru
+        sensorManager.unregisterListener(this)
+    }
+
+    private var shakeCount = 0
+
+    override fun onSensorChanged(event: SensorEvent) {
+        if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastShakeTime > 1000) {
+                val x = event.values[0]
+                val y = event.values[1]
+                val z = event.values[2]
+
+                val deltaX = x - lastX
+                val deltaY = y - lastY
+                val deltaZ = z - lastZ
+
+                val speed = Math.sqrt((deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ).toDouble()) / SensorManager.GRAVITY_EARTH
+                if (speed > shakeThreshold) {
+                    lastShakeTime = currentTime
+                    shakeCount++
+
+                    if (shakeCount >= 2) {
+                        // Obsługa dwukrotnego potrząśnięcia: włącz latarkę
+                        switchFlashlight()
+                        shakeCount = 0 // Zresetuj licznik po dwukrotnym potrząśnięciu
+                    }
+                }
+
+                lastX = x
+                lastY = y
+                lastZ = z
+            }
+        }
+    }
+
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        // Nie jest wymagane
+    }
     private fun muteVideo() {
         recordingMuted = !recordingMuted
 
