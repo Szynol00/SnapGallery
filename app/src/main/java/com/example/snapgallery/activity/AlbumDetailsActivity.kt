@@ -1,6 +1,7 @@
 package com.example.snapgallery.activity
 
 import android.content.ContentUris
+import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.TextView
@@ -13,7 +14,6 @@ import com.example.snapgallery.model.MediaItem
 import com.example.snapgallery.model.MediaType
 import android.content.res.Configuration
 import android.net.Uri
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -64,8 +64,12 @@ class AlbumDetailsActivity : AppCompatActivity() {
 
     private fun displayMediaType(mediaType: MediaType) {
         val filteredMediaItems = allMediaItems.filter { it.type == mediaType }
-        albumContentRecyclerView.adapter = MediaAdapter(filteredMediaItems) { mediaItem ->
-            // Tutaj możesz zdefiniować, co ma się dziać po kliknięciu na element
+        albumContentRecyclerView.adapter = MediaAdapter(this, filteredMediaItems) { uris, position ->
+            val intent = Intent(this, FullScreenPhotoAlbumActivity::class.java).apply {
+                putParcelableArrayListExtra("albumImagesUris", uris)
+                putExtra("selectedImageIndex", position)
+            }
+            startActivity(intent)
         }
 
         // Ustaw widoczność TextView w zależności od stanu listy mediów
@@ -75,6 +79,7 @@ class AlbumDetailsActivity : AppCompatActivity() {
             emptyTextView.visibility = View.GONE
         }
     }
+
 
     private fun fetchMedia(albumId: String): List<MediaItem> {
         return fetchImages(albumId) + fetchVideos(albumId).map { uri ->

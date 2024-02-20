@@ -46,9 +46,12 @@
             android:name=".activity.FullScreenImageActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.FullScreenPhotoAlbumActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.VideoPlayerActivity"
-            android:hardwareAccelerated="true"></activity>
-        <activity android:name=".activity.AlbumDetailsActivity"></activity>
+            android:hardwareAccelerated="true" />
+        <activity android:name=".activity.AlbumDetailsActivity"/>
     </application>
 
 </manifest>
