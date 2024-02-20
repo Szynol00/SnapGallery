@@ -33,6 +33,7 @@ class VideoPlayerActivity : AppCompatActivity() {
         findViewById<ImageView>(R.id.prev_button).visibility = View.GONE
         findViewById<ImageView>(R.id.next_button).visibility = View.GONE
 
+
         playerView = findViewById(R.id.player_view)
 
         val prevButton = findViewById<ImageView>(R.id.prev_button)

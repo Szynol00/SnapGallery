@@ -12,7 +12,10 @@ import com.bumptech.glide.Glide
 import com.example.snapgallery.VideoRepository
 import com.example.snapgallery.activity.VideoPlayerActivity
 
-class VideoAdapter(private val videos: List<Uri>, private val onVideoClick: (Uri) -> Unit) : RecyclerView.Adapter<VideoAdapter.ViewHolder>() {
+class VideoAdapter(
+    private val videos: List<Uri>,
+    private val onVideoClick: (Uri) -> Unit
+) : RecyclerView.Adapter<VideoAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var videoView: ImageView = itemView.findViewById(R.id.video_view)

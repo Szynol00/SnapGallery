@@ -1,6 +1,7 @@
 package com.example.snapgallery.activity
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -14,10 +15,11 @@ class FullScreenImageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_full_screen_image)
 
+        val albumImagesUris = intent.extras?.getParcelableArrayList<Uri>("albumImagesUris") ?: arrayListOf()
         val selectedImageIndex = intent.getIntExtra("selectedImageIndex", 0)
 
         // Używanie obrazów z repozytorium
-        val adapter = FullScreenImageAdapter(this, ImageRepository.images)
+        val adapter = FullScreenImageAdapter(this, albumImagesUris)
 
         val viewPager: ViewPager2 = findViewById(R.id.viewPager)
         viewPager.adapter = adapter
@@ -34,7 +36,7 @@ class FullScreenImageActivity : AppCompatActivity() {
             val shareIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
                 // Example: content://com.google.android.apps.photos.contentprovider/...
-                putExtra(Intent.EXTRA_STREAM, ImageRepository.images[selectedImageIndex])
+                putExtra(Intent.EXTRA_STREAM, albumImagesUris[selectedImageIndex])
                 type = "image/jpeg"
             }
             startActivity(Intent.createChooser(shareIntent, null))
