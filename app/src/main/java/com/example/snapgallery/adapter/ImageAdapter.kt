@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 
 class ImageAdapter(
     private val images: List<Uri>,
-    private val onImageClick: ((ArrayList<Uri>, Uri) -> Unit)? = null
+    private val onImageClick: ((Uri) -> Unit)? = null // Dodatkowy parametr dla obsługi kliknięcia
 ) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -34,7 +34,7 @@ class ImageAdapter(
 
         // Ustawienie onClickListener dla każdego elementu
         holder.imageView.setOnClickListener {
-            onImageClick?.invoke(images as ArrayList<Uri>, imageUri)
+            onImageClick?.invoke(imageUri)
         }
     }
 

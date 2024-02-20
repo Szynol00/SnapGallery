@@ -9,20 +9,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.snapgallery.R
+import com.example.snapgallery.adapter.MediaAdapter
+import com.example.snapgallery.model.MediaItem
+import com.example.snapgallery.model.MediaType
 import android.content.res.Configuration
 import android.net.Uri
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import com.example.snapgallery.adapter.ImageAdapter
-import com.example.snapgallery.adapter.VideoAdapter
 
 class AlbumDetailsActivity : AppCompatActivity() {
 
     private lateinit var albumContentRecyclerView: RecyclerView
     private lateinit var emptyTextView: TextView
-    private var images = listOf<Uri>()
-    private var videos = listOf<Uri>()
+    private var allMediaItems = listOf<MediaItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,46 +43,17 @@ class AlbumDetailsActivity : AppCompatActivity() {
 
         configureRecyclerView()
 
-        images = fetchImages(albumId ?: "")
-        videos = fetchVideos(albumId ?: "")
+        allMediaItems = fetchMedia(albumId ?: "")
 
         findViewById<Button>(R.id.showImagesButton).setOnClickListener {
-            displayImages()
+            displayMediaType(MediaType.IMAGE)
         }
 
         findViewById<Button>(R.id.showVideosButton).setOnClickListener {
-            displayVideos()
+            displayMediaType(MediaType.VIDEO)
         }
 
-        displayImages()
-    }
-
-    private fun displayImages() {
-        albumContentRecyclerView.adapter = ImageAdapter(images) { uris, imageUri ->
-            val intent = Intent(this, FullScreenImageActivity::class.java).apply {
-                val selectedImageIndex = uris.indexOf(imageUri)
-                putParcelableArrayListExtra("albumImagesUris", uris)
-                putExtra("selectedImageIndex", selectedImageIndex)
-            }
-            startActivity(intent)
-        }
-
-        // Ustaw widoczność TextView w zależności od stanu listy mediów
-        if (images.isEmpty()) emptyTextView.visibility = View.VISIBLE
-        else emptyTextView.visibility = View.GONE
-    }
-
-    private fun displayVideos() {
-        albumContentRecyclerView.adapter = VideoAdapter(videos) { videoUri ->
-            val intent = Intent(this, VideoPlayerActivity::class.java).apply {
-                putExtra("videoUri", videoUri)
-            }
-            startActivity(intent)
-        }
-
-        // Ustaw widoczność TextView w zależności od stanu listy mediów
-        if (videos.isEmpty()) emptyTextView.visibility = View.VISIBLE
-        else emptyTextView.visibility = View.GONE
+        displayMediaType(MediaType.IMAGE)
     }
 
     private fun configureRecyclerView() {
@@ -91,8 +62,33 @@ class AlbumDetailsActivity : AppCompatActivity() {
         albumContentRecyclerView.layoutManager = GridLayoutManager(this, spanCount)
     }
 
-    private fun fetchImages(albumId: String?): List<Uri> {
-        val imageList = mutableListOf<Uri>()
+    private fun displayMediaType(mediaType: MediaType) {
+        val filteredMediaItems = allMediaItems.filter { it.type == mediaType }
+        albumContentRecyclerView.adapter = MediaAdapter(this, filteredMediaItems) { uris, position ->
+            val intent = Intent(this, FullScreenPhotoAlbumActivity::class.java).apply {
+                putParcelableArrayListExtra("albumImagesUris", uris)
+                putExtra("selectedImageIndex", position)
+            }
+            startActivity(intent)
+        }
+
+        // Ustaw widoczność TextView w zależności od stanu listy mediów
+        if (filteredMediaItems.isEmpty()) {
+            emptyTextView.visibility = View.VISIBLE
+        } else {
+            emptyTextView.visibility = View.GONE
+        }
+    }
+
+
+    private fun fetchMedia(albumId: String): List<MediaItem> {
+        return fetchImages(albumId) + fetchVideos(albumId).map { uri ->
+            MediaItem(0L, uri, MediaType.VIDEO)
+        }
+    }
+
+    private fun fetchImages(albumId: String?): List<MediaItem> {
+        val imageList = mutableListOf<MediaItem>()
         val projection = arrayOf(MediaStore.Images.Media._ID)
 
         val selection = "${MediaStore.Images.Media.BUCKET_ID} = ?"
@@ -104,12 +100,15 @@ class AlbumDetailsActivity : AppCompatActivity() {
             if (albumId != null) selection else null,
             if (albumId != null) selectionArgs else null,
             MediaStore.Images.Media.DATE_TAKEN + " DESC"
-        )?.use {
+
+        )
+
+        cursor?.use {
             val idColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
             while (it.moveToNext()) {
                 val id = it.getLong(idColumn)
                 val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                imageList.add(contentUri)
+                imageList.add(MediaItem(id, contentUri, MediaType.IMAGE))
             }
         }
 
@@ -140,3 +139,4 @@ class AlbumDetailsActivity : AppCompatActivity() {
         return videoList
     }
 }
+

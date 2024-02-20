@@ -86,10 +86,9 @@ class ImagesFragment : Fragment() {
         ImageRepository.images = images
 
         // Przekazanie funkcji obsługującej kliknięcie na obraz
-        val adapter = ImageAdapter(images) { uris, uri ->
-            val selectedImageIndex = uris.indexOf(uri)
+        val adapter = ImageAdapter(images) { uri ->
+            val selectedImageIndex = images.indexOf(uri)
             val intent = Intent(context, FullScreenImageActivity::class.java).apply {
-                putParcelableArrayListExtra("albumImagesUris", uris)
                 putExtra("selectedImageIndex", selectedImageIndex) // Przekazanie indeksu wybranego obrazu
             }
             startActivity(intent)
