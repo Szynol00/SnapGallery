@@ -1,10 +1,9 @@
 # SnapGallery
 
-SnapGallery to aplikacja mobilna zaprojektowana, aby pomóc użytkownikom efektywnie zarządzać plikami multimedialnymi, takimi jak zdjęcia i filmy, na urządzeniach z systemem Android. Aplikacja oferuje funkcje do przechwytywania, organizowania i zabezpieczania plików multimedialnych za pomocą łatwego w użyciu interfejsu.
+SnapGallery to aplikacja na system Android, stworzona w celu dostarczenia użytkownikom prostego i funkcjonalnego narzędzia do zarządzania plikami multimedialnymi. Umożliwia robienie zdjęć i nagrywanie filmów, wyszukiwanie, usuwanie oraz udostępnianie plików. Kluczową funkcją jest możliwość ukrywania i zabezpieczania multimediów za pomocą kodu PIN lub autoryzacji odciskiem palca.
 
 ## Spis Treści
 
-1. [Opis Projektu](#opis-projektu)
 2. [Funkcje](#funkcje)
 3. [Instalacja](#instalacja)
 4. [Wymagania](#wymagania)
@@ -15,17 +14,12 @@ SnapGallery to aplikacja mobilna zaprojektowana, aby pomóc użytkownikom efekty
 9. [Autorzy](#autorzy)
 10. [Licencja](#licencja)
 
-## Opis Projektu
-
-SnapGallery to aplikacja na system Android, stworzona w celu dostarczenia użytkownikom prostego i funkcjonalnego narzędzia do zarządzania plikami multimedialnymi. Umożliwia robienie zdjęć i nagrywanie filmów, wyszukiwanie, usuwanie oraz udostępnianie plików. Kluczową funkcją jest możliwość ukrywania i zabezpieczania multimediów za pomocą kodu PIN lub autoryzacji odciskiem palca.
-
 ## Funkcje
 
 - **Zarządzanie multimediami:** Przeglądanie, organizowanie i edytowanie kolekcji zdjęć i filmów.
 - **Przechwytywanie multimediów:** Robienie zdjęć i nagrywanie filmów bezpośrednio w aplikacji.
-- **Zabezpieczanie multimediów:** Ukrywanie i zabezpieczanie zdjęć i filmów za pomocą kodu PIN lub odcisku palca.
+- **Zabezpieczanie multimediów:** Zabezpieczanie zdjęć i filmów za pomocą kodu PIN lub odcisku palca.
 - **Minimalistyczny interfejs:** Prosty i przyjazny interfejs użytkownika, skoncentrowany na treści multimedialnej.
-- **Obsługa gestów:** Intuicyjna nawigacja i interakcja za pomocą gestów.
 - **Opcje udostępniania:** Udostępnianie wybranych multimediów na platformach społecznościowych lub innym użytkownikom.
 - **Dostęp do aparatu:** Wbudowana funkcja aparatu do robienia zdjęć i nagrywania filmów.
 - **Używanie latarki:** Możliwość używania latarki w warunkach słabego oświetlenia podczas robienia zdjęć.
