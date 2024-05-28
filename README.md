@@ -105,7 +105,7 @@ Aplikacja składa się z kilku kluczowych komponentów:
 
 ## Szczegółowa Dokumentacja
 
-Szczegółowa dokumentacja znajduje się w plikach [dokumentacja.pdf](dokumentacja.pdf) oraz [manual.pdf](manual.pdf).
+Szczegółowa dokumentacja znajduje się w plikach [dokumentacja.pdf](Dokumentacja.pdf) oraz [manual.pdf](Manual.pdf).
 
 ## Autorzy
 
