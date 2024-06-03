@@ -87,7 +87,7 @@ Aplikacja składa się z kilku kluczowych komponentów:
 
 ### Przeglądanie Konkretnego Filmu
 
-<img src="https://github.com/Szynol00/SnapGallery/assets/104465225/d6265d84-e28e-4612-986c-282f34e1e97e" alt="Przeglądanie Konkretnego Filmu" width="300" style="border: 2px solid #000;"/>
+<img src="https://github.com/Szynol00/SnapGallery/assets/104465225/9f1eb938-d565-48c4-9919-7636709c34ed" alt="Przeglądanie Konkretnego Filmu" width="300" style="border: 2px solid #000;"/>
 
 ### Widok Aparatu
 
